@@ -8,5 +8,184 @@
 
 import Foundation
 
-print("Hello, World!")
+let kNumberOfRun = 1000000
+let kWinRate = 0.565
+let kERWPerPack = 1/7.5 + 7/8 * (1/24 + 23/24 * 0.2) + (2 * 3 + 5) * 0.002
+let kERWPerDraftDeck = 2 * 0.2 + (10 * 3 + 33) * 0.002
+let kERWPerSealedDeck = 6 * 0.2 + (18 * 3 + 66) * 0.002
 
+print("MTGA Reward Sim")
+print("Ranked Draft:")
+
+var totalGems = 0, totalPacks = 0.0
+
+for _ in 1...kNumberOfRun {
+	var currentWins = 0, currentLoss = 0
+	while currentLoss < 3 && currentWins < 7 {
+		if Double.random(in: 0...1) < kWinRate {
+			currentWins += 1
+		}
+		else {
+			currentLoss += 1
+		}
+	}
+	switch currentWins
+	{
+	case 0:
+		totalGems += 50
+		totalPacks += 1.2
+	case 1:
+		totalGems += 100
+		totalPacks += 1.22
+	case 2:
+		totalGems += 200
+		totalPacks += 1.24
+	case 3:
+		totalGems += 300
+		totalPacks += 1.26
+	case 4:
+		totalGems += 450
+		totalPacks += 1.30
+	case 5:
+		totalGems += 650
+		totalPacks += 1.35
+	case 6:
+		totalGems += 850
+		totalPacks += 1.40
+	case 7:
+		totalGems += 950
+		totalPacks += 2
+	default: break
+	}
+
+//	print("\(currentWins) wins!")
+}
+
+let gemCostERW = Double(kNumberOfRun * 750 - totalGems) / (totalPacks * kERWPerPack + Double(kNumberOfRun) * kERWPerDraftDeck)
+let goldCostERW = Double(kNumberOfRun) * 5000.0 / (totalPacks * kERWPerPack + Double(kNumberOfRun) * kERWPerDraftDeck + Double(totalGems) / gemCostERW)
+let ICRInERW = 0.9 * 0.006 + 0.1 * 7/8 * 0.2
+
+print("""
+	\(kNumberOfRun) runs:
+	\(kWinRate) winRate
+	\(kNumberOfRun * 5000) gold spent
+	or \(kNumberOfRun * 750) gem spent
+	\(totalGems) gem rewarded
+	\(totalPacks) packs rewarded
+	\(kNumberOfRun) draft decks rewarded
+	\(gemCostERW) gem cost per rare wildcard
+	\(goldCostERW) gold cost per rare wildcard
+	ICR worths \(ICRInERW * goldCostERW) gold or \(ICRInERW * gemCostERW) gem
+	""")
+
+print("MTGA Reward Sim")
+print("Traditional Draft:")
+
+totalGems = 0
+totalPacks = 0.0
+
+for _ in 1...kNumberOfRun {
+	var currentWins = 0, currentLoss = 0
+	while currentLoss < 2 && currentWins < 5 {
+		if Double.random(in: 0...1) < kWinRate {
+			currentWins += 1
+		}
+		else {
+			currentLoss += 1
+		}
+	}
+	switch currentWins
+	{
+	case 0:
+		totalGems += 0
+		totalPacks += 1
+	case 1:
+		totalGems += 0
+		totalPacks += 2
+	case 2:
+		totalGems += 800
+		totalPacks += 3
+	case 3:
+		totalGems += 1500
+		totalPacks += 4
+	case 4:
+		totalGems += 1800
+		totalPacks += 5
+	case 5:
+		totalGems += 2100
+		totalPacks += 6
+	default: break
+	}
+	
+//	print("\(currentWins) wins!")
+}
+
+print("""
+	\(kNumberOfRun) runs:
+	\(kWinRate) winRate
+	\(kNumberOfRun * 1500) gem spent
+	\(totalGems) gem rewarded
+	\(totalPacks) packs rewarded
+	\(kNumberOfRun) draft decks rewarded
+	\(kNumberOfRun * 1500 - totalGems) real gem spent
+	\(Double(kNumberOfRun * 1500 - totalGems) / (totalPacks * kERWPerPack + kERWPerDraftDeck * Double(kNumberOfRun))) gem cost per rare wildcard
+	""")
+
+print("MTGA Reward Sim")
+print("Sealed:")
+
+totalGems = 0
+totalPacks = 0.0
+
+for _ in 1...kNumberOfRun {
+	var currentWins = 0, currentLoss = 0
+	while currentLoss < 3 && currentWins < 7 {
+		if Double.random(in: 0...1) < kWinRate {
+			currentWins += 1
+		}
+		else {
+			currentLoss += 1
+		}
+	}
+	switch currentWins
+	{
+	case 0:
+		totalGems += 200
+		totalPacks += 3
+	case 1:
+		totalGems += 400
+		totalPacks += 3
+	case 2:
+		totalGems += 600
+		totalPacks += 3
+	case 3:
+		totalGems += 1200
+		totalPacks += 3
+	case 4:
+		totalGems += 1400
+		totalPacks += 3
+	case 5:
+		totalGems += 1600
+		totalPacks += 3
+	case 6:
+		totalGems += 2000
+		totalPacks += 3
+	case 7:
+		totalGems += 2200
+		totalPacks += 3
+	default: break
+	}
+	
+	//	print("\(currentWins) wins!")
+}
+
+print("""
+	\(kNumberOfRun) runs:
+	\(kWinRate) winRate
+	\(kNumberOfRun * 2000) gem spent
+	\(totalGems) gem rewarded
+	\(totalPacks) packs rewarded
+	\(kNumberOfRun * 6) draft decks rewarded
+	\(kNumberOfRun * 2000 - totalGems) real gem spent
+	\(Double(kNumberOfRun * 2000 - totalGems) / (totalPacks * kERWPerPack + kERWPerSealedDeck * Double(kNumberOfRun))) gem cost per rare wildcard
+	""")
