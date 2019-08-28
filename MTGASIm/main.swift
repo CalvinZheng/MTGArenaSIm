@@ -9,10 +9,10 @@
 import Foundation
 
 let kNumberOfRun = 1000000
-let kWinRate = 51/96.0
-let kRare4CopyRate = 0.0
+let kWinRate = 76/147.0
+let kRare4CopyRate = 0.2
 let kERWPerPack = 1/7.5 + 7/8.0 * (1/24.0 + 23/24.0 * 0.2) + (2 * 3 + 5) * 0.002
-let kERWPerDraftDeck = 3 * 7/8.0 * (1-kRare4CopyRate) * 0.2 + (10 * 3 + 33) * 0.002
+let kERWPerDraftDeck = 2 * (1-kRare4CopyRate) * 0.2 + (10 * 3 + 33) * 0.002
 let kERWPerSealedDeck = 6 * 7/8.0 * (1-kRare4CopyRate) * 0.2 + (18 * 3 + 66) * 0.002
 let kERWPerICR = 0.9 * 0.006 + 0.1 * 7/8.0 * (1-kRare4CopyRate) * 0.2
 
@@ -63,10 +63,10 @@ for _ in 1...kNumberOfRun {
 //	print("\(currentWins) wins!")
 }
 
-totalGems += kNumberOfRun * 3.0 * kRare4CopyRate * 20
+totalGems += kNumberOfRun * 2.0 * kRare4CopyRate * 20
 
-let gemCostERW = Double(kNumberOfRun * 750 - totalGems) / (totalPacks * kERWPerPack + Double(kNumberOfRun) * kERWPerDraftDeck)
-let goldCostERW = Double(kNumberOfRun) * 5000.0 / (totalPacks * kERWPerPack + Double(kNumberOfRun) * kERWPerDraftDeck + Double(totalGems) / gemCostERW)
+var gemCostERW = Double(kNumberOfRun * 750 - totalGems) / (totalPacks * kERWPerPack + Double(kNumberOfRun) * kERWPerDraftDeck)
+var goldCostERW = Double(kNumberOfRun) * 5000.0 / (totalPacks * kERWPerPack + Double(kNumberOfRun) * kERWPerDraftDeck + Double(totalGems) / gemCostERW)
 
 print("""
 	\(kNumberOfRun) runs:
@@ -78,7 +78,8 @@ print("""
 	\(kNumberOfRun) draft decks rewarded
 	\(gemCostERW) gem cost per rare wildcard
 	\(goldCostERW) gold cost per rare wildcard
-	ICR worths \(kERWPerICR * goldCostERW) gold or \(kERWPerICR * gemCostERW) gem
+	ICR worths \(kERWPerICR * goldCostERW + 0.1 * 7/8.0 * kRare4CopyRate * 20 / gemCostERW * goldCostERW) gold or \(kERWPerICR * gemCostERW + 0.1 * 7/8.0 * kRare4CopyRate * 20) gem
+	---------
 	""")
 
 print("MTGA Reward Sim")
@@ -123,6 +124,9 @@ for _ in 1...kNumberOfRun {
 //	print("\(currentWins) wins!")
 }
 
+totalGems += kNumberOfRun * 2.0 * kRare4CopyRate * 20
+gemCostERW = Double(kNumberOfRun * 1500 - totalGems) / (totalPacks * kERWPerPack + Double(kNumberOfRun) * kERWPerDraftDeck)
+
 print("""
 	\(kNumberOfRun) runs:
 	\(kWinRate) winRate
@@ -131,7 +135,8 @@ print("""
 	\(totalPacks) packs rewarded
 	\(kNumberOfRun) draft decks rewarded
 	\(kNumberOfRun * 1500 - totalGems) real gem spent
-	\(Double(kNumberOfRun * 1500 - totalGems) / (totalPacks * kERWPerPack + kERWPerDraftDeck * Double(kNumberOfRun))) gem cost per rare wildcard
+	\(gemCostERW) gem cost per rare wildcard
+	----------
 	""")
 
 print("MTGA Reward Sim")
@@ -182,6 +187,9 @@ for _ in 1...kNumberOfRun {
 	//	print("\(currentWins) wins!")
 }
 
+totalGems += kNumberOfRun * 6.0 * kRare4CopyRate * 20
+gemCostERW = Double(kNumberOfRun * 2000 - totalGems) / (totalPacks * kERWPerPack + Double(kNumberOfRun) * kERWPerSealedDeck)
+
 print("""
 	\(kNumberOfRun) runs:
 	\(kWinRate) winRate
@@ -190,5 +198,6 @@ print("""
 	\(totalPacks) packs rewarded
 	\(kNumberOfRun * 6) draft decks rewarded
 	\(kNumberOfRun * 2000 - totalGems) real gem spent
-	\(Double(kNumberOfRun * 2000 - totalGems) / (totalPacks * kERWPerPack + kERWPerSealedDeck * Double(kNumberOfRun))) gem cost per rare wildcard
+	\(gemCostERW) gem cost per rare wildcard
+	ICR worths \(kERWPerICR * gemCostERW + 0.1 * 7/8.0 * kRare4CopyRate * 20) gem
 	""")
